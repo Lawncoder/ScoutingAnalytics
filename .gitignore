@@ -1,1 +1,2 @@
 analytics/target/classes/client_secret_*.json
+analytics/src/main/resources/client_secret_*.json
