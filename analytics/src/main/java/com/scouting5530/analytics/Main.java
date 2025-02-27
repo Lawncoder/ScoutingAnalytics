@@ -4,7 +4,9 @@ public class Main {
     public static void main(String[] args) {
         BlueAllianceFetcher fetcher = new BlueAllianceFetcher();
         try {
-            System.err.println(fetcher.getOpps(5530));
+            SheetsQuickstart quickstart = new SheetsQuickstart();
+            quickstart.initialize();
+            quickstart.findRowByTeamAndMatch(2861, 23);
             
 
 
@@ -18,6 +20,8 @@ public class Main {
     public static void print(Object key, Object val) {
         System.out.println(key.toString() + " " + val.toString());
     }
+
+
 }
 /*
 {
