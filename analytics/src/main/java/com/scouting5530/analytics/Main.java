@@ -4,10 +4,7 @@ public class Main {
     public static void main(String[] args) {
         BlueAllianceFetcher fetcher = new BlueAllianceFetcher();
         try {
-            SheetsQuickstart quickstart = new SheetsQuickstart();
-            quickstart.initialize();
-            quickstart.getValues("FERNDALE!A1:A1").forEach(Main::print);;
-            System.out.println(fetcher.getOpps(5530));
+            System.err.println(fetcher.getOpps(5530));
             
 
 
