@@ -85,8 +85,25 @@ public class BlueAllianceFetcher {
         }
         @Override
         public String toString() {
+            
             return "(" + Integer.toString(team) + "," + Integer.toString(qual) + ")";
         }
+        @Override 
+        public boolean equals(Object m) {
+            if (!(m instanceof Match)) {
+                return false;
+            }
+            Match o = (Match) m;
+            
+            return (o.team == this.team)&&(o.qual==this.qual);
+        }
+        @Override
+        public int hashCode() {
+            return this.team * 1000 + this.qual;
+        }
+        
+
+        
     }
   
     /* /event/{event_key}/teams */
