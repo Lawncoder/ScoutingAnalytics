@@ -83,97 +83,44 @@ public class SheetsQuickstart {
   
     return service.spreadsheets().values().get(SPREADSHEET_ID, range).execute();
   }
+  public int columnChecker() throws IOException {
+    int i = 2;
+   
+    boolean hasReachedEnd = false;
+    while (!hasReachedEnd) {
+      String range = "FERNDALE!B" + String.valueOf(i) + ":B" + String.valueOf(i);
+      if (service.spreadsheets().values().get(SPREADSHEET_ID, range).execute().getValues() == null) {
+        hasReachedEnd = true;
+        break;
 
+      }
+     
+      
+      i++;
+
+    }
+
+    return i-1;
+  }
+  
 
 //the function assumes that the C column is the TEAM NUMBER and B column is the QUAL/MATCH NUMBER bc thats what the sheet says rn, change if needed
 
-public List<Object> findRowByTeamAndMatch(int teamNumber, int matchNumber) throws IOException {
-  // Step 1: Get the entire sheet's used range dynamically
-  String sheetName = "Scouting Data 2025"; // Change if needed
-  String range = getDynamicRange(sheetName);
-
-  // Step 2: Fetch data from the dynamically determined range
-  ValueRange response = service.spreadsheets().values()
-          .get(SPREADSHEET_ID, range)
-          .execute();
-
-  List<List<Object>> values = response.getValues();
-  if (values == null || values.isEmpty()) {
-      System.out.println("No data found.");
-      return null;
-  }
-
-  // Step 3: Search for the matching row
-  for (List<Object> row : values) {
-      if (row.size() > 2) { // Ensure the row has enough columns
-          try {
-              int rowMatchNumber = Integer.parseInt(row.get(1).toString()); // Column B (Index 1)
-              int rowTeamNumber = Integer.parseInt(row.get(2).toString()); // Column C (Index 2)
-
-              if (rowMatchNumber == matchNumber && rowTeamNumber == teamNumber) {
-                  return row; // Return the matching row
-              }
-          } catch (NumberFormatException e) {
-              System.err.println("Skipping invalid row: " + row);
-          }
-      }
-  }
-
-  return null; // No matching row found
 }
 
 
 
 
-//changes the range based on the sheet
-private String getDynamicRange(String sheetName) throws IOException {
-  // Fetch metadata about the sheet's dimensions
-  String metaRange = sheetName + "!A1:Z1000"; // Fetch a broad range
-  ValueRange response = service.spreadsheets().values()
-          .get(SPREADSHEET_ID, metaRange)
-          .execute(); 
-
-  List<List<Object>> values = response.getValues();
-  if (values == null || values.isEmpty()) {
-      throw new IOException("No data found in sheet: " + sheetName);
-  }
-
-  // Find last non-empty row
-  int lastRow = values.size();
-  int lastColumn = 0;
-
-  for (List<Object> row : values) {
-      lastColumn = Math.max(lastColumn, row.size()); // Get max column index
-  }
-
-  if (lastRow == 0 || lastColumn == 0) {
-    return sheetName + "!A1:A1"; // Fallback if sheet is empty
-}
-
-  // Convert last column index to letter (e.g., 3 → "C", 26 → "Z")
-  String lastColumnLetter = columnNumberToLetter(lastColumn);
-
-  // Construct the range dynamically
-  return sheetName + "!A1:" + lastColumnLetter + lastRow;
-}
 
 
 
 
-//converts the column index into the letter 
-private String columnNumberToLetter(int colNum) {
-  StringBuilder columnLetter = new StringBuilder();
-  while (colNum > 0) {
-      colNum--; // Convert to 0-based index
-      columnLetter.insert(0, (char) ('A' + (colNum % 26)));
-      colNum /= 26;
-  }
-  return columnLetter.toString();
-}
 
 
 
-}
+
+
+
 
 
 

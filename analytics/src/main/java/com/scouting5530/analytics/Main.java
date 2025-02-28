@@ -1,13 +1,57 @@
 package com.scouting5530.analytics;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class Main {
+    static int teamToCalculate = 5530;
     public static void main(String[] args) {
         BlueAllianceFetcher fetcher = new BlueAllianceFetcher();
         try {
             SheetsQuickstart quickstart = new SheetsQuickstart();
             quickstart.initialize();
-            quickstart.findRowByTeamAndMatch(2861, 23);
+            int last = quickstart.columnChecker();
+            int first = 2;
+
+            String range = "FERNDALE!B" + Integer.toString(first) + ":fAO" + Integer.toString(last);
+            List<List<Object>> values = quickstart.getValues(range).getValues();
+            Map<BlueAllianceFetcher.Match, Data> matchData = new HashMap<>();
+            for (List<Object> o : values) {
+              Data d = Data.deserialize(o);
+              BlueAllianceFetcher.Match m = fetcher.new Match(d.teamNumber, d.qualificationNumber);
+              matchData.put(m, d);
+            }
+            List<BlueAllianceFetcher.Match> matches =  Arrays.asList(
+              fetcher.new Match(2526, 24),
+              fetcher.new Match(2861, 23)
+            );    //fetcher.getOpps(teamToCalculate); Cannot use this because no matches
+
+            List<Data> oppData = new ArrayList<>();
+            Map<Integer, Double> oppsAverageScore = new HashMap<>();
+            for (BlueAllianceFetcher.Match m : matches) {
+                int key = m.team;
+                int averageScore = 0;
+                int numOfMatches = 0;
+                for (BlueAllianceFetcher.Match mm : matchData.keySet()) {
+                  if (mm.team == key) {
+                    Data specific = matchData.get(mm);
+                    if (!specific.brokeDown) {
+                      averageScore += specific.calculateTeleScore();
+                      numOfMatches ++;
+                    }
+                  }
+                }
+                oppsAverageScore.put(key, averageScore * 1.0/numOfMatches);
+            }
+            System.out.println(oppsAverageScore);
+
+
             
+            
+
 
 
 
